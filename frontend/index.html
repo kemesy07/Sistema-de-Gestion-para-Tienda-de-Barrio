@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="es" ng-app="tiendaApp">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistema de Gestión – Tienda de Barrio</title>
+
+  <!-- Materialize CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
+  <!-- Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body ng-controller="MainCtrl">
+
+  <!-- ── Navbar ──────────────────────────────────────────────────────────── -->
+  <nav class="teal darken-2">
+    <div class="nav-wrapper container">
+      <a href="#!" class="brand-logo"><i class="material-icons">store</i> Tienda de Barrio</a>
+      <a href="#!" data-target="sidenav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="#!" ng-click="setVista('dashboard')"><i class="material-icons left">dashboard</i>Dashboard</a></li>
+        <li><a href="#!" ng-click="setVista('productos')"><i class="material-icons left">inventory_2</i>Productos</a></li>
+        <li><a href="#!" ng-click="setVista('ventas')"><i class="material-icons left">point_of_sale</i>Ventas</a></li>
+        <li><a href="#!" ng-click="setVista('clientes')"><i class="material-icons left">people</i>Clientes</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Sidenav móvil -->
+  <ul class="sidenav" id="sidenav">
+    <li><div class="user-view teal darken-2"><p class="white-text name">Keidy Mercado Sierra</p><p class="white-text email">SENA – Gestión Tienda de Barrio</p></div></li>
+    <li><a href="#!" ng-click="setVista('dashboard')" class="sidenav-close"><i class="material-icons">dashboard</i>Dashboard</a></li>
+    <li><a href="#!" ng-click="setVista('productos')" class="sidenav-close"><i class="material-icons">inventory_2</i>Productos</a></li>
+    <li><a href="#!" ng-click="setVista('ventas')"   class="sidenav-close"><i class="material-icons">point_of_sale</i>Ventas</a></li>
+    <li><a href="#!" ng-click="setVista('clientes')" class="sidenav-close"><i class="material-icons">people</i>Clientes</a></li>
+  </ul>
+
+  <div class="container section">
+
+    <!-- ── Toast de notificaciones ─────────────────────────────────────── -->
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         DASHBOARD
+    ══════════════════════════════════════════════════════════════════════ -->
+    <div ng-show="vista === 'dashboard'">
+      <h5 class="teal-text text-darken-2"><i class="material-icons tiny">dashboard</i> Panel Principal</h5>
+      <div class="row">
+        <!-- Tarjeta productos -->
+        <div class="col s12 m4">
+          <div class="card teal darken-1 white-text">
+            <div class="card-content">
+              <span class="card-title"><i class="material-icons">inventory_2</i> Productos</span>
+              <h3>{{ productos.length }}</h3>
+              <p>Total registrados</p>
+            </div>
+            <div class="card-action"><a class="white-text" href="#!" ng-click="setVista('productos')">Ver todos →</a></div>
+          </div>
+        </div>
+        <!-- Tarjeta ventas hoy -->
+        <div class="col s12 m4">
+          <div class="card blue darken-1 white-text">
+            <div class="card-content">
+              <span class="card-title"><i class="material-icons">point_of_sale</i> Ventas</span>
+              <h3>{{ ventas.length }}</h3>
+              <p>Total registradas</p>
+            </div>
+            <div class="card-action"><a class="white-text" href="#!" ng-click="setVista('ventas')">Ver todas →</a></div>
+          </div>
+        </div>
+        <!-- Tarjeta clientes -->
+        <div class="col s12 m4">
+          <div class="card orange darken-1 white-text">
+            <div class="card-content">
+              <span class="card-title"><i class="material-icons">people</i> Clientes</span>
+              <h3>{{ clientes.length }}</h3>
+              <p>Registrados</p>
+            </div>
+            <div class="card-action"><a class="white-text" href="#!" ng-click="setVista('clientes')">Ver todos →</a></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alertas de stock bajo -->
+      <div class="row" ng-if="productosAlerta.length > 0">
+        <div class="col s12">
+          <div class="card red lighten-4">
+            <div class="card-content red-text text-darken-3">
+              <span class="card-title"><i class="material-icons">warning</i> Alertas de Stock Bajo</span>
+              <ul class="collection">
+                <li class="collection-item red-text text-darken-2" ng-repeat="p in productosAlerta">
+                  <b>{{ p.nombre }}</b> — Stock: <b>{{ p.stock }}</b> (mínimo: {{ p.stockMinimo }})
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Últimas ventas -->
+      <div class="row">
+        <div class="col s12">
+          <h6 class="teal-text">Últimas 5 Ventas</h6>
+          <table class="striped responsive-table">
+            <thead><tr><th>Fecha</th><th>Items</th><th>Pago</th><th>Total</th></tr></thead>
+            <tbody>
+              <tr ng-repeat="v in ventas | limitTo: 5">
+                <td>{{ v.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+                <td>{{ v.items.length }} producto(s)</td>
+                <td><span class="chip">{{ v.tipoPago }}</span></td>
+                <td><b>${{ v.total | number:0 }}</b></td>
+              </tr>
+              <tr ng-if="ventas.length === 0"><td colspan="4" class="center grey-text">Sin ventas aún</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         PRODUCTOS
+    ══════════════════════════════════════════════════════════════════════ -->
+    <div ng-show="vista === 'productos'">
+      <div class="row valign-wrapper">
+        <div class="col s8"><h5 class="teal-text text-darken-2"><i class="material-icons tiny">inventory_2</i> Inventario de Productos</h5></div>
+        <div class="col s4 right-align">
+          <a class="btn teal darken-2 waves-effect" ng-click="abrirModalProducto(null)"><i class="material-icons left">add</i>Nuevo</a>
+        </div>
+      </div>
+
+      <div class="input-field">
+        <i class="material-icons prefix">search</i>
+        <input id="buscarProd" type="text" ng-model="filtroProd" />
+        <label for="buscarProd">Buscar producto…</label>
+      </div>
+
+      <table class="striped highlight responsive-table">
+        <thead><tr><th>Nombre</th><th>Categoría</th><th>Precio</th><th>Stock</th><th>Estado</th><th>Acciones</th></tr></thead>
+        <tbody>
+          <tr ng-repeat="p in productos | filter:filtroProd">
+            <td>{{ p.nombre }}</td>
+            <td>{{ p.categoria }}</td>
+            <td>${{ p.precio | number:0 }}</td>
+            <td>{{ p.stock }}</td>
+            <td>
+              <span class="chip" ng-class="p.stock <= p.stockMinimo ? 'red white-text' : 'green white-text'">
+                {{ p.stock <= p.stockMinimo ? '⚠ Bajo' : 'OK' }}
+              </span>
+            </td>
+            <td>
+              <a class="btn-small blue waves-effect" ng-click="abrirModalProducto(p)"><i class="material-icons">edit</i></a>
+              <a class="btn-small red waves-effect" ng-click="eliminarProducto(p._id)"><i class="material-icons">delete</i></a>
+            </td>
+          </tr>
+          <tr ng-if="productos.length === 0"><td colspan="6" class="center grey-text">No hay productos</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         VENTAS
+    ══════════════════════════════════════════════════════════════════════ -->
+    <div ng-show="vista === 'ventas'">
+      <div class="row valign-wrapper">
+        <div class="col s8"><h5 class="teal-text text-darken-2"><i class="material-icons tiny">point_of_sale</i> Registro de Ventas</h5></div>
+        <div class="col s4 right-align">
+          <a class="btn teal darken-2 waves-effect" ng-click="abrirModalVenta()"><i class="material-icons left">add</i>Nueva Venta</a>
+        </div>
+      </div>
+
+      <table class="striped highlight responsive-table">
+        <thead><tr><th>Fecha</th><th>Productos</th><th>Cliente</th><th>Pago</th><th>Total</th><th>Acción</th></tr></thead>
+        <tbody>
+          <tr ng-repeat="v in ventas">
+            <td>{{ v.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td>{{ v.items.length }} ítem(s)</td>
+            <td>{{ v.cliente ? v.cliente.nombre : '—' }}</td>
+            <td><span class="chip">{{ v.tipoPago }}</span></td>
+            <td><b>${{ v.total | number:0 }}</b></td>
+            <td><a class="btn-small red waves-effect" ng-click="eliminarVenta(v._id)"><i class="material-icons">delete</i></a></td>
+          </tr>
+          <tr ng-if="ventas.length === 0"><td colspan="6" class="center grey-text">Sin ventas registradas</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         CLIENTES
+    ══════════════════════════════════════════════════════════════════════ -->
+    <div ng-show="vista === 'clientes'">
+      <div class="row valign-wrapper">
+        <div class="col s8"><h5 class="teal-text text-darken-2"><i class="material-icons tiny">people</i> Clientes</h5></div>
+        <div class="col s4 right-align">
+          <a class="btn teal darken-2 waves-effect" ng-click="abrirModalCliente(null)"><i class="material-icons left">add</i>Nuevo</a>
+        </div>
+      </div>
+
+      <table class="striped highlight responsive-table">
+        <thead><tr><th>Nombre</th><th>Teléfono</th><th>Dirección</th><th>Deuda (crédito)</th><th>Acciones</th></tr></thead>
+        <tbody>
+          <tr ng-repeat="c in clientes">
+            <td>{{ c.nombre }}</td>
+            <td>{{ c.telefono || '—' }}</td>
+            <td>{{ c.direccion || '—' }}</td>
+            <td ng-class="c.deuda > 0 ? 'red-text text-darken-2' : ''"><b>${{ c.deuda | number:0 }}</b></td>
+            <td>
+              <a class="btn-small blue waves-effect" ng-click="abrirModalCliente(c)"><i class="material-icons">edit</i></a>
+              <a class="btn-small red waves-effect" ng-click="eliminarCliente(c._id)"><i class="material-icons">delete</i></a>
+            </td>
+          </tr>
+          <tr ng-if="clientes.length === 0"><td colspan="5" class="center grey-text">Sin clientes</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div><!-- /container -->
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       MODAL – PRODUCTO
+  ════════════════════════════════════════════════════════════════════════ -->
+  <div id="modalProducto" class="modal">
+    <div class="modal-content">
+      <h5>{{ formProducto._id ? 'Editar' : 'Nuevo' }} Producto</h5>
+      <div class="row">
+        <div class="input-field col s12 m6">
+          <input id="pNombre" type="text" ng-model="formProducto.nombre" />
+          <label for="pNombre">Nombre *</label>
+        </div>
+        <div class="input-field col s12 m6">
+          <input id="pCategoria" type="text" ng-model="formProducto.categoria" />
+          <label for="pCategoria">Categoría *</label>
+        </div>
+        <div class="input-field col s12 m4">
+          <input id="pPrecio" type="number" ng-model="formProducto.precio" />
+          <label for="pPrecio">Precio *</label>
+        </div>
+        <div class="input-field col s12 m4">
+          <input id="pStock" type="number" ng-model="formProducto.stock" />
+          <label for="pStock">Stock actual *</label>
+        </div>
+        <div class="input-field col s12 m4">
+          <input id="pStockMin" type="number" ng-model="formProducto.stockMinimo" />
+          <label for="pStockMin">Stock mínimo</label>
+        </div>
+        <div class="input-field col s12">
+          <input id="pCodigo" type="text" ng-model="formProducto.codigo" />
+          <label for="pCodigo">Código (opcional)</label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <a class="btn-flat modal-close">Cancelar</a>
+      <a class="btn teal darken-2 waves-effect" ng-click="guardarProducto()">Guardar</a>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       MODAL – VENTA
+  ════════════════════════════════════════════════════════════════════════ -->
+  <div id="modalVenta" class="modal modal-large">
+    <div class="modal-content">
+      <h5>Nueva Venta</h5>
+
+      <!-- Seleccionar producto -->
+      <div class="row">
+        <div class="input-field col s12 m6">
+          <select ng-model="itemTemp.productoId" materialize-select>
+            <option value="" disabled selected>Selecciona un producto</option>
+            <option ng-repeat="p in productos" value="{{ p._id }}">{{ p.nombre }} — ${{ p.precio | number:0 }} (stock: {{ p.stock }})</option>
+          </select>
+          <label>Producto</label>
+        </div>
+        <div class="input-field col s12 m3">
+          <input id="itemCant" type="number" min="1" ng-model="itemTemp.cantidad" />
+          <label for="itemCant">Cantidad</label>
+        </div>
+        <div class="col s12 m3 valign-wrapper" style="padding-top:26px">
+          <a class="btn teal waves-effect btn-block" ng-click="agregarItemVenta()"><i class="material-icons left">add</i>Agregar</a>
+        </div>
+      </div>
+
+      <!-- Tabla de items -->
+      <table class="striped" ng-if="carritoVenta.length > 0">
+        <thead><tr><th>Producto</th><th>Cant.</th><th>Precio Unit.</th><th>Subtotal</th><th></th></tr></thead>
+        <tbody>
+          <tr ng-repeat="it in carritoVenta">
+            <td>{{ it.nombre }}</td>
+            <td>{{ it.cantidad }}</td>
+            <td>${{ it.precioUnit | number:0 }}</td>
+            <td>${{ it.subtotal | number:0 }}</td>
+            <td><a class="btn-small red" ng-click="quitarItemVenta($index)"><i class="material-icons">remove</i></a></td>
+          </tr>
+        </tbody>
+        <tfoot><tr><td colspan="3"><b>Total</b></td><td colspan="2"><b>${{ totalVenta() | number:0 }}</b></td></tr></tfoot>
+      </table>
+
+      <div class="row" style="margin-top:16px">
+        <div class="input-field col s12 m6">
+          <select ng-model="formVenta.tipoPago" materialize-select>
+            <option value="efectivo">Efectivo</option>
+            <option value="credito">Crédito (Fiado)</option>
+          </select>
+          <label>Tipo de pago</label>
+        </div>
+        <div class="input-field col s12 m6" ng-if="formVenta.tipoPago === 'credito'">
+          <select ng-model="formVenta.clienteId" materialize-select>
+            <option value="" disabled selected>Selecciona cliente</option>
+            <option ng-repeat="c in clientes" value="{{ c._id }}">{{ c.nombre }}</option>
+          </select>
+          <label>Cliente (crédito)</label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <a class="btn-flat modal-close">Cancelar</a>
+      <a class="btn teal darken-2 waves-effect" ng-click="registrarVenta()" ng-disabled="carritoVenta.length === 0">Registrar Venta</a>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       MODAL – CLIENTE
+  ════════════════════════════════════════════════════════════════════════ -->
+  <div id="modalCliente" class="modal">
+    <div class="modal-content">
+      <h5>{{ formCliente._id ? 'Editar' : 'Nuevo' }} Cliente</h5>
+      <div class="row">
+        <div class="input-field col s12 m6">
+          <input id="cNombre" type="text" ng-model="formCliente.nombre" />
+          <label for="cNombre">Nombre *</label>
+        </div>
+        <div class="input-field col s12 m6">
+          <input id="cTelefono" type="text" ng-model="formCliente.telefono" />
+          <label for="cTelefono">Teléfono</label>
+        </div>
+        <div class="input-field col s12">
+          <input id="cDireccion" type="text" ng-model="formCliente.direccion" />
+          <label for="cDireccion">Dirección</label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <a class="btn-flat modal-close">Cancelar</a>
+      <a class="btn teal darken-2 waves-effect" ng-click="guardarCliente()">Guardar</a>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
