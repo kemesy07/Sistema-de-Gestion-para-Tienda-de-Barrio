@@ -1,6 +1,6 @@
 // ─────────────────────────────────────────────────────────────────────────────
 //  Sistema de Gestión para Tienda de Barrio
-//  Frontend – AngularJS 1.x
+//  Frontend: Angular
 //  Autor: Keidy Mercado Sierra — SENA
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -101,14 +101,17 @@ angular.module('tiendaApp', [])
   $scope.itemTemp     = { cantidad: 1 };
   $scope.formVenta    = { tipoPago: 'efectivo' };
 
-  $scope.abrirModalVenta = function () {
-    $scope.carritoVenta = [];
-    $scope.itemTemp     = { cantidad: 1 };
-    $scope.formVenta    = { tipoPago: 'efectivo' };
-    const modal = M.Modal.getInstance(document.getElementById('modalVenta'));
-    modal.open();
-    setTimeout(() => M.FormSelect.init(document.querySelectorAll('select')), 200);
-  };
+$scope.abrirModalVenta = function () {
+  $scope.carritoVenta = [];
+  $scope.itemTemp     = { cantidad: 1 };
+  $scope.formVenta    = { tipoPago: 'efectivo' };
+  const modal = M.Modal.getInstance(document.getElementById('modalVenta'));
+  modal.open();
+  setTimeout(() => {
+    M.FormSelect.init(document.querySelectorAll('select'));
+    M.updateTextFields();
+  }, 300);
+};
 
   $scope.agregarItemVenta = function () {
     const { productoId, cantidad } = $scope.itemTemp;

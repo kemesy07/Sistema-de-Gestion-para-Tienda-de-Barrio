@@ -17,7 +17,7 @@
   <!-- ── Navbar ──────────────────────────────────────────────────────────── -->
   <nav class="teal darken-2">
     <div class="nav-wrapper container">
-      <a href="#!" class="brand-logo"><i class="material-icons">store</i> Tienda de Barrio</a>
+      <a href="#!" class="brand-logo" ng-click="setVista('dashboard')"><i class="material-icons">store</i> Tienda de Barrio</a>
       <a href="#!" data-target="sidenav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
       <ul class="right hide-on-med-and-down">
         <li><a href="#!" ng-click="setVista('dashboard')"><i class="material-icons left">dashboard</i>Dashboard</a></li>
@@ -30,7 +30,7 @@
 
   <!-- Sidenav móvil -->
   <ul class="sidenav" id="sidenav">
-    <li><div class="user-view teal darken-2"><p class="white-text name">Keidy Mercado</p><p class="white-text email">SENA – Gestión Tienda de Barrio</p></div></li>
+    <li><div class="user-view teal darken-2"><p class="white-text name">Gestión Tienda de Barrio – SENA</p><p class="white-text email">Keidy Mercado</p></div></li>
     <li><a href="#!" ng-click="setVista('dashboard')" class="sidenav-close"><i class="material-icons">dashboard</i>Dashboard</a></li>
     <li><a href="#!" ng-click="setVista('productos')" class="sidenav-close"><i class="material-icons">inventory_2</i>Productos</a></li>
     <li><a href="#!" ng-click="setVista('ventas')"   class="sidenav-close"><i class="material-icons">point_of_sale</i>Ventas</a></li>
