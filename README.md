@@ -1,5 +1,5 @@
 # Sistema de Gestión para Tienda de Barrio
-**Autora:** Keidy Mercado 
+**Autora:** Keidy Mercado   
 **Programa:** Programación de Aplicaciones y Servicios para la Nube - SENA
 
 ## Stack tecnológico
