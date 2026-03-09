@@ -1,9 +1,10 @@
 # Sistema de Gestión para Tienda de Barrio
-**Autora:** Keidy Mercado Sierra | **Programa:** SENA – Programación de Aplicaciones y Servicios para la Nube
+**Autora:** Keidy Mercado 
+**Programa:** Programación de Aplicaciones y Servicios para la Nube - SENA
 
 ## Stack tecnológico
 - **MongoDB** + **Express** + **AngularJS** + **Node.js** = MEAN Stack
-- **Materialize CSS** para la interfaz (Material Design)
+- **Materialize CSS** para la interfaz
 
 ## Módulos
 - 📦 Inventario de productos con alertas de stock bajo
