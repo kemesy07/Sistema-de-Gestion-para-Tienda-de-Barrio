@@ -4,7 +4,7 @@
 //  Autor: Keidy Mercado Sierra — SENA
 // ─────────────────────────────────────────────────────────────────────────────
 
-const API = 'http://localhost:3000/api';   // <── cambia si despliegas el backend en otra URL
+const API = 'https://sistema-de-gestion-para-tienda-de-barrio.onrender.com/api';   // <── cambia si despliegas el backend en otra URL
 
 angular.module('tiendaApp', [])
 
